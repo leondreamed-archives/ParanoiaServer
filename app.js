@@ -16,6 +16,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('tookScreenshot', function(base64Screenshots) {
-    socket.broadcast.emit('tookScreenshots', base64Screenshots);
+    socket.broadcast.emit('tookScreenshot', base64Screenshots);
   });
 });
