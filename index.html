@@ -13,6 +13,7 @@
 <body>
   <h1>Paranoia</h1>
   <p>You are currently in <strong>leonzalion</strong>'s room.</p>
+  <button onclick="takeScreenshot()">Take Screenshot(s)</button>
   <div id="screenshots"></div>
   <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
   <script
@@ -30,6 +31,10 @@
         $('#screenshots').appendChild(image);
       }
     });
+
+    function takeScreenshot() {
+      socket.emit('takeScreenshot');
+    }
   </script>
 </body>
 </html>
