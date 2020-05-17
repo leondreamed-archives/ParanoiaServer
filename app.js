@@ -7,10 +7,20 @@ server.listen(port);
 
 app.set('view engine', 'ejs');
 
+const rooms = {
+
+};
+
+let schedules = [];
+
 app.get('/', (req, res) => {
   res.render('index', {
     room: 'leonzalion'
   });
+});
+
+app.get('/test', (req, res) => {
+  res.json(rooms);
 });
 
 app.get('/:room', (req, res) => {
@@ -19,15 +29,8 @@ app.get('/:room', (req, res) => {
   });
 });
 
-const rooms = {
 
-};
 
-let schedules = [];
-
-app.get('/test', (req, res) => {
-  res.json(rooms);
-});
 
 io.on('connection', (socket) => {
   socket.on('disconnect', function() {
