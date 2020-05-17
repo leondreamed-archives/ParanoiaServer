@@ -25,6 +25,10 @@ const rooms = {
 
 let schedules = [];
 
+app.get('/test', (req, res) => {
+  res.json(rooms);
+});
+
 io.on('connection', (socket) => {
   socket.on('disconnect', function() {
     for (const [room, roomObj] of Object.entries(rooms)) {
