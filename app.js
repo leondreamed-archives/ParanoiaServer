@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
         const now = new Date();
 
         if (now >= start && now <= end) {
-          socket.to(room).emit('takeScreenshot', room, rooms[room].screenshotWidth);
+          socket.to(rooms[room].userSocketId).emit('takeScreenshot', room, rooms[room].screenshotWidth);
           return fn(true);
         }
       }

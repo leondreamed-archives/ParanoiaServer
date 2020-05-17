@@ -96,7 +96,7 @@
         image.css('width', '800px');
         image.addClass('screenshot');
 
-        const text = $(`<p class="screenshot-caption">Screen #${i}</p>`);
+        const text = $(`<p class="screenshot-caption">Screen #${i + 1}</p>`);
         $('#screenshots').append(image).append(text);
       }
     });
