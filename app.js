@@ -41,8 +41,13 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('takeScreenshot', function(room) {
-    socket.to(room).emit('takeScreenshot', room);
+  socket.on('takeScreenshot', function(room, fn) {
+    if (rooms[room] && rooms[room].isUserOnline) {
+      socket.to(room).emit('takeScreenshot', room);
+      fn(true);
+    } else {
+      fn(false, 'User is not online.');
+    }
   });
 
   socket.on('tookScreenshot', function(room, base64Screenshots) {
@@ -55,7 +60,7 @@ io.on('connection', (socket) => {
 
   socket.on('setSchedules', function(room, newSchedules) {
     rooms[room].schedules = newSchedules;
-    socket.to(room).emit('setSchedules', room, schedules);
+    socket.to(room).emit('setSchedules', room, newSchedules);
   });
 
   socket.on('connectUser', function(room) {

@@ -57,6 +57,7 @@
   <div id="calendar" style="height: 800px"></div>
   <div class="container">
     <button type="button" class="btn btn-primary" onclick="takeScreenshot()">Take Screenshot(s)</button>
+    <p id="message"></p>
     <div id="screenshots"></div>
   </div>
 
@@ -65,10 +66,18 @@
     const socket = io.connect('https://paranoia-app.herokuapp.com');
 
     socket.emit('joinRoom', room, function onComplete() {
+
       socket.emit('getSchedules', room, function(schedules) {
+        console.log('hi');
         calendar.clear();
         calendar.createSchedules(schedules);
       });
+
+      socket.on('setSchedules', function(room, schedules) {
+        calendar.clear();
+        calendar.createSchedules(schedules);
+      });
+
     })
 
     socket.on('tookScreenshot', (room, base64Screenshots) => {
@@ -81,7 +90,11 @@
     });
 
     function takeScreenshot() {
-      socket.emit('takeScreenshot', room);
+      socket.emit('takeScreenshot', room, function(success, message) {
+        if (!success) {
+          $('#message').text(message);
+        }
+      });
     }
 
     const Calendar = tui.Calendar;
@@ -92,11 +105,6 @@
     });
 
 
-
-    socket.on('setSchedules', function(room, schedules) {
-      calendar.clear();
-      calendar.createSchedules(schedules);
-    });
   </script>
 </body>
 </html>
