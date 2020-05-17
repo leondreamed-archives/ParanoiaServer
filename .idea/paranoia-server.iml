@@ -12,5 +12,6 @@
     <orderEntry type="library" name="tui-time-picker" level="application" />
     <orderEntry type="library" name="tui-date-picker" level="application" />
     <orderEntry type="library" name="tui-calendar" level="application" />
+    <orderEntry type="library" name="popper.js" level="application" />
   </component>
 </module>
