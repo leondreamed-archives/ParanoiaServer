@@ -85,10 +85,12 @@
     });
 
     socket.emit('getSchedules', function(schedules) {
+      calendar.clear();
       calendar.createSchedules(schedules);
     });
 
     socket.on('setSchedules', function(schedules) {
+      calendar.clear();
       calendar.createSchedules(schedules);
     });
 
