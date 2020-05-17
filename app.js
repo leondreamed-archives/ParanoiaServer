@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('getSchedules', function(room, fn) {
-    fn(rooms[room] ? rooms[room].schedules : []);
+    fn(rooms[room] ? rooms[room].schedules || [] : []);
   });
 
   socket.on('setSchedules', function(room, newSchedules) {
