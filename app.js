@@ -8,45 +8,51 @@ server.listen(port);
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  res.render('index');
-});
-
-app.get('/:slug', (req, res) => {
   res.render('index', {
-    slug: req.params.slug
+    room: 'leonzalion'
   });
 });
 
-let schedules = [];
-let isUserOnline = false;
+app.get('/:room', (req, res) => {
+  res.render('index', {
+    room: req.params.room
+  });
+});
 
-let userSocketId = null;
+const rooms = {
+
+};
+
+let schedules = [];
 
 io.on('connection', (socket) => {
   socket.on('disconnect', function() {
-    if (socket.id === userSocketId) {
-      isUserOnline = false;
+    for (const [room, roomObj] of Object.entries(rooms)) {
+      if (socket.id === roomObj.userSocketId) {
+        rooms[room].isUserOnline = false;
+      }
     }
   });
 
-  socket.on('takeScreenshot', function() {
-    socket.broadcast.emit('takeScreenshot');
+  socket.on('takeScreenshot', function(room) {
+    socket.to(room).emit('takeScreenshot', room);
   });
 
-  socket.on('tookScreenshot', function(base64Screenshots) {
-    socket.broadcast.emit('tookScreenshot', base64Screenshots);
+  socket.on('tookScreenshot', function(room, base64Screenshots) {
+    socket.to(room).emit('tookScreenshot', room, base64Screenshots);
   });
 
-  socket.on('getSchedules', function(fn) {
-    fn(schedules);
+  socket.on('getSchedules', function(room, fn) {
+    fn(rooms[room] ? rooms[room].schedules : []);
   });
 
-  socket.on('setSchedules', function(newSchedules) {
-    schedules = newSchedules;
-    socket.broadcast.emit('setSchedules', schedules);
+  socket.on('setSchedules', function(room, newSchedules) {
+    rooms[room].schedules = newSchedules;
+    socket.to(room).emit('setSchedules', room, schedules);
   });
 
-  socket.on('connectUser', function() {
-    userSocketId = socket.id;
+  socket.on('connectUser', function(room) {
+    rooms[room] = rooms[room] || {};
+    rooms[room].userSocketId = socket.id;
   });
 });

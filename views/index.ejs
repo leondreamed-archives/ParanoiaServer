@@ -53,7 +53,7 @@
 </head>
 <body>
   <h1 class="title">Paranoia</h1>
-  <p class="description">You are currently in <strong>leonzalion</strong>'s room.</p>
+  <p class="description">You are currently in <strong id="room"><%= room %></strong>'s room.</p>
   <div id="calendar" style="height: 800px"></div>
   <div class="container">
     <button type="button" class="btn btn-primary" onclick="takeScreenshot()">Take Screenshot(s)</button>
@@ -61,10 +61,10 @@
   </div>
 
   <script>
+    const room = $('#room').text();
     const socket = io.connect('https://paranoia-app.herokuapp.com');
 
-    socket.on('tookScreenshot', (base64Screenshots) => {
-      console.log('screenshot');
+    socket.on('tookScreenshot', (room, base64Screenshots) => {
       for (const base64Screenshot of base64Screenshots) {
         const image = $('<img />');
         image.attr('src', base64Screenshot);
@@ -74,7 +74,7 @@
     });
 
     function takeScreenshot() {
-      socket.emit('takeScreenshot');
+      socket.emit('takeScreenshot', room);
     }
 
     const Calendar = tui.Calendar;
@@ -84,16 +84,15 @@
       isReadOnly: true,
     });
 
-    socket.emit('getSchedules', function(schedules) {
+    socket.emit('getSchedules', room, function(schedules) {
       calendar.clear();
       calendar.createSchedules(schedules);
     });
 
-    socket.on('setSchedules', function(schedules) {
+    socket.on('setSchedules', room, function(schedules) {
       calendar.clear();
       calendar.createSchedules(schedules);
     });
-
   </script>
 </body>
 </html>
