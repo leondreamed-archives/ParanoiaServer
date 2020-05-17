@@ -76,7 +76,8 @@ io.on('connection', (socket) => {
     rooms[room] = rooms[room] || {};
     rooms[room].userSocketId = socket.id;
     rooms[room].isUserOnline = true;
-    rooms[room].screenshotWidth = 100;
+    rooms[room].screenshotWidth = rooms[room].screenshotWidth || 100;
+    rooms[room].schedules = rooms[room].schedules || [];
     onComplete();
   });
 
