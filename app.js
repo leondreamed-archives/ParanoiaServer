@@ -8,11 +8,11 @@ server.listen(port);
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.ejs');
+  res.render('index');
 });
 
 app.get('/:slug', (req, res) => {
-  res.render('pages/index', {
+  res.render('index', {
     slug: req.params.slug
   });
 });
