@@ -71,11 +71,13 @@ io.on('connection', (socket) => {
     socket.to(room).emit('setSchedules', room, newSchedules);
   });
 
-  socket.on('connectUser', function(room) {
+  socket.on('connectUser', function(room, onComplete) {
     socket.join(room);
     rooms[room] = rooms[room] || {};
     rooms[room].userSocketId = socket.id;
     rooms[room].isUserOnline = true;
+    rooms[room].screenshotWidth = 100;
+    onComplete();
   });
 
   socket.on('joinRoom', function(room, onComplete) {
@@ -87,5 +89,9 @@ io.on('connection', (socket) => {
     if (rooms[room]) {
       rooms[room].screenshotWidth = screenshotWidth;
     }
+  });
+
+  socket.on('getScreenshotWidth', function(room, fn) {
+    fn(rooms[room].screenshotWidth);
   });
 });
