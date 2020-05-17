@@ -15,9 +15,14 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/test', (req, res) => {
+app.get('/log', (req, res) => {
   res.json(rooms);
 });
+
+app.get('/clear', (req, res) => {
+  for (const room in rooms) delete rooms[room];
+  res.json(rooms);
+})
 
 app.get('/:room', (req, res) => {
   res.render('index', {
@@ -43,7 +48,7 @@ io.on('connection', (socket) => {
         const now = new Date();
 
         if (now >= start && now <= end) {
-          socket.to(room).emit('takeScreenshot', room);
+          socket.to(room).emit('takeScreenshot', room, rooms[room].screenshotWidth);
           return fn(true);
         }
       }
@@ -76,5 +81,11 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', function(room, onComplete) {
     socket.join(room);
     onComplete();
+  });
+
+  socket.on('setScreenshotWidth', function(room, screenshotWidth) {
+    if (rooms[room]) {
+      rooms[room].screenshotWidth = screenshotWidth;
+    }
   });
 });

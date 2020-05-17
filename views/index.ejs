@@ -49,6 +49,15 @@
     .description {
       text-align: center;
     }
+
+    .screenshot {
+      margin-top: 20px;
+    }
+
+    .screenshot-caption {
+      text-align: center;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -68,7 +77,6 @@
     socket.emit('joinRoom', room, function onComplete() {
 
       socket.emit('getSchedules', room, function(schedules) {
-        console.log('hi');
         calendar.clear();
         calendar.createSchedules(schedules);
       });
@@ -81,11 +89,15 @@
     })
 
     socket.on('tookScreenshot', (room, base64Screenshots) => {
-      for (const base64Screenshot of base64Screenshots) {
+      for (let i = 0; i < base64Screenshots.length; ++i) {
+        const base64Screenshot = base64Screenshots[i];
         const image = $('<img />');
         image.attr('src', base64Screenshot);
         image.css('width', '800px');
-        $('#screenshots').append(image);
+        image.addClass('screenshot');
+
+        const text = $(`<p class="screenshot-caption">Screen #${i}</p>`);
+        $('#screenshots').append(image).append(text);
       }
     });
 
@@ -103,8 +115,6 @@
       taskView: false,
       isReadOnly: true,
     });
-
-
   </script>
 </body>
 </html>
