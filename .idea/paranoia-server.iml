@@ -7,5 +7,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="socket.io-client" level="application" />
     <orderEntry type="library" name="jquery-3.5.1" level="application" />
+    <orderEntry type="library" name="tui-code-snippet" level="application" />
+    <orderEntry type="library" name="tui-dom" level="application" />
+    <orderEntry type="library" name="tui-time-picker" level="application" />
+    <orderEntry type="library" name="tui-date-picker" level="application" />
+    <orderEntry type="library" name="tui-calendar" level="application" />
   </component>
 </module>
