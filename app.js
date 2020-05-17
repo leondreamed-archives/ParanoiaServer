@@ -7,11 +7,7 @@ server.listen(port);
 
 app.set('view engine', 'ejs');
 
-const rooms = {
-
-};
-
-let schedules = [];
+const rooms = {};
 
 app.get('/', (req, res) => {
   res.render('index', {
@@ -29,9 +25,6 @@ app.get('/:room', (req, res) => {
   });
 });
 
-
-
-
 io.on('connection', (socket) => {
   socket.on('disconnect', function() {
     for (const [room, roomObj] of Object.entries(rooms)) {
@@ -43,10 +36,20 @@ io.on('connection', (socket) => {
 
   socket.on('takeScreenshot', function(room, fn) {
     if (rooms[room] && rooms[room].isUserOnline) {
-      socket.to(room).emit('takeScreenshot', room);
-      fn(true);
+      const schedules = rooms[room].schedules;
+      for (const schedule of schedules) {
+        const start = new Date(schedule.start);
+        const end = new Date(schedule.end);
+        const now = new Date();
+
+        if (now >= start && now <= end) {
+          socket.to(room).emit('takeScreenshot', room);
+          return fn(true);
+        }
+      }
+      return fn(false, 'The user has not scheduled Paranoia for this time.');
     } else {
-      fn(false, 'User is not online.');
+      return fn(false, 'User is not online.');
     }
   });
 
@@ -67,6 +70,7 @@ io.on('connection', (socket) => {
     socket.join(room);
     rooms[room] = rooms[room] || {};
     rooms[room].userSocketId = socket.id;
+    rooms[room].isUserOnline = true;
   });
 
   socket.on('joinRoom', function(room, onComplete) {
