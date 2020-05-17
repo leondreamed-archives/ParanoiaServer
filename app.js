@@ -59,7 +59,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('connectUser', function(room) {
+    socket.join(room);
     rooms[room] = rooms[room] || {};
     rooms[room].userSocketId = socket.id;
+  });
+
+  socket.on('joinRoom', function(room, onComplete) {
+    socket.join(room);
+    onComplete();
   });
 });

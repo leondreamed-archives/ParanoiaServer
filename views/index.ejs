@@ -64,6 +64,13 @@
     const room = $('#room').text();
     const socket = io.connect('https://paranoia-app.herokuapp.com');
 
+    socket.emit('joinRoom', room, function onComplete() {
+      socket.emit('getSchedules', room, function(schedules) {
+        calendar.clear();
+        calendar.createSchedules(schedules);
+      });
+    })
+
     socket.on('tookScreenshot', (room, base64Screenshots) => {
       for (const base64Screenshot of base64Screenshots) {
         const image = $('<img />');
@@ -84,12 +91,9 @@
       isReadOnly: true,
     });
 
-    socket.emit('getSchedules', room, function(schedules) {
-      calendar.clear();
-      calendar.createSchedules(schedules);
-    });
 
-    socket.on('setSchedules', room, function(schedules) {
+
+    socket.on('setSchedules', function(room, schedules) {
       calendar.clear();
       calendar.createSchedules(schedules);
     });
